@@ -27,6 +27,27 @@
   <!-- Main CSS File -->
   <link href="{{asset('template/assets/css/main.css')}}" rel="stylesheet">
 
+  <!-- Custom CSS -->
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+    }
+    .btn {
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .card {
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+  </style>
+
   <!-- =======================================================
   * Template Name: Company
   * Template URL: https://bootstrapmade.com/company-free-html-bootstrap-template/
@@ -36,25 +57,24 @@
   ======================================================== -->
 </head>
 
-<body class="starter-page-page">
+<body class="d-flex flex-column min-vh-100">
 
 @include('partial.header')
-  <main class="main" style="min-height: 80vh;">
+  <main class="flex-grow-1 py-4" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
 
-   
-
-    <!-- Starter Section Section -->
-    <section id="starter-section" class="starter-section section">
+    <!-- Main Content Section -->
+    <section id="main-section" class="py-4">
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>@yield('section-title', 'HOME')</h2>
+        <h2 class="fw-bold text-center mb-4" style="color: #198754;">@yield('section-title', 'Dashboard')</h2>
+      </div>
 
-      <div class="container" data-aos="fade-up">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
         @yield('content')
       </div>
 
-    </section><!-- /Starter Section Section -->
+    </section><!-- /Main Content Section -->
 
   </main>
   @include('partial.footer')

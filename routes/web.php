@@ -36,7 +36,7 @@ Route::get('/profile', [AuthController::class, 'getprofile'])->middleware('auth'
 Route::post('/profile', [AuthController::class, 'createProfile'])->middleware('auth');
 Route::put('/profile/{id}', [AuthController::class, 'updateProfile'])->middleware('auth');
 
-Route::post('/comment/{book_Id}', [DashboardController::class, 'comment'])->middleware('auth');
+Route::post('/comment/{book_id}', [booksController::class, 'comments'])->middleware('auth');
 
 Route::get('/genres', [genresController::class, 'index']);
 Route::get('/genres/{id}', [genresController::class, 'show']);

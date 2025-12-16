@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use  Carbon\Carbon;
-use App\Models\genres;
+use Carbon\Carbon;
+use App\Models\Genre;
 
 class genresController extends Controller
 {
@@ -13,38 +13,37 @@ class genresController extends Controller
     {
         return view('genres.tambah');
     }
-    public function store(Request $request){
-
+    public function store(Request $request)
+    {
         //validasi input
         $request->validate([
-        'name' => 'required|max:255',
-        'description' => 'required',
-         ]);
-        $now = Carbon::now();
-        //simpan data ke database
-         DB::table('genres')->insert([
-                'name' => $request->input('name'),
-                'description' => $request->input('description'),
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
-            //arahkan ke semua genres
-            return redirect('/genres');
+            'name' => 'required|max:255',
+            'description' => 'required',
+        ]);
+        
+        //simpan data ke database menggunakan Eloquent
+        Genre::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+        ]);
+        
+        //arahkan ke semua genres
+        return redirect('/genres')->with('success', 'Genre berhasil ditambahkan!');
     }   
     public function index()
     {
-        $genres = DB::table('genres')->get();
+        $genres = Genre::all();
         return view('genres.tampil', ['genres' => $genres]);
     }
     public function show($id)
     {
-     $genres = genres::find($id);   
-     return view('genres.detail', ['genres' => $genres]);
+        $genres = Genre::with('books')->findOrFail($id);   
+        return view('genres.detail', ['genres' => $genres]);
     }
     public function edit($id)
     {
-     $genres = DB::table('genres')->find($id);
-     return view('genres.edit', ['genres' => $genres]);
+        $genres = Genre::findOrFail($id);
+        return view('genres.edit', ['genres' => $genres]);
     }
     public function update(Request $request, $id)
     {
@@ -54,23 +53,22 @@ class genresController extends Controller
             'description' => 'required',
         ]);
 
-        $now = Carbon::now();
-        //update data di database
-        DB::table('genres')
-        ->where('id', $id)
-        ->update([
+        //update data di database menggunakan Eloquent
+        $genre = Genre::findOrFail($id);
+        $genre->update([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'updated_at' => $now,
-        ]);   
-        return redirect('/genres');
-
+        ]);
+        
+        return redirect('/genres')->with('success', 'Genre berhasil diupdate!');
     }
     public function destroy($id)
     {
-        //hapus data dari database
-        DB::table('genres')->where('id', $id)->delete();
+        //hapus data dari database menggunakan Eloquent
+        $genre = Genre::findOrFail($id);
+        $genre->delete();
+        
         //arahkan ke semua genres
-        return redirect('/genres');
+        return redirect('/genres')->with('success', 'Genre berhasil dihapus!');
     }   
 }

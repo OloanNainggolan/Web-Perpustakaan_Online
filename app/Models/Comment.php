@@ -6,7 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    protected $table= 'comments';
-protected $fillable = ['content', 'user_id', 'genres_id'];
+    protected $table = 'comments';
+    protected $fillable = ['comments', 'user_id', 'book_id'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
 }

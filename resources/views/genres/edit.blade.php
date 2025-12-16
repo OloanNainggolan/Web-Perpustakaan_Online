@@ -5,15 +5,15 @@
 @endsection
 
 @section('section-title')
-    <span class="fw-bold text-dark display-6">HALAMAN EDIT GENRE</span>
+    Edit Genre
 @endsection
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container mt-4">
         <div class="card border-0 shadow-lg rounded-4">
             <div class="card-header text-white text-center py-4"
-                 style="background: linear-gradient(135deg, #14532d, #1abc9c); border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;">
-                <h3 class="mb-0">Form Edit Genre</h3>
+                 style="background: linear-gradient(135deg, #198754, #20c997);">
+                <h3 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Form Edit Genre</h3>
             </div>
 
             <div class="card-body px-5 py-4 bg-light rounded-bottom-4">
@@ -33,25 +33,32 @@
                     @method('PUT')
 
                     <div class="mb-4">
-                        <label for="name" class="form-label fw-semibold text-dark">Nama Genre</label>
-                        <input type="text" name="name" id="name"
-                               class="form-control form-control-lg border border-success rounded-3 shadow-sm"
+                        <label for="name" class="form-label fw-semibold text-dark">
+                            <i class="bi bi-bookmark-star me-2"></i>Nama Genre
+                        </label>
+                        <input type="text" name="name" id="name" required
+                               class="form-control form-control-lg border-2 border-success rounded-3 shadow-sm"
                                value="{{ old('name', $genres->name) }}"
                                placeholder="Masukkan nama genre">
                     </div>
 
                     <div class="mb-4">
-                        <label for="description" class="form-label fw-semibold text-dark">Deskripsi Genre</label>
-                        <textarea name="description" id="description" rows="4"
-                                  class="form-control form-control-lg border border-success rounded-3 shadow-sm"
+                        <label for="description" class="form-label fw-semibold text-dark">
+                            <i class="bi bi-card-text me-2"></i>Deskripsi Genre
+                        </label>
+                        <textarea name="description" id="description" rows="4" required
+                                  class="form-control form-control-lg border-2 border-success rounded-3 shadow-sm"
                                   placeholder="Masukkan deskripsi genre">{{ old('description', $genres->description) }}</textarea>
                     </div>
 
-                    <div class="text-center">
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a href="/genres" class="btn btn-outline-secondary btn-lg px-5 rounded-pill">
+                            <i class="bi bi-arrow-left me-2"></i>Kembali
+                        </a>
                         <button type="submit"
-                                class="btn btn-lg px-5 text-white fw-semibold shadow-sm"
-                                style="background: linear-gradient(135deg, #14532d, #1abc9c); border-radius: 2rem;">
-                            Simpan Perubahan
+                                class="btn btn-lg px-5 text-white fw-semibold shadow-sm rounded-pill"
+                                style="background: linear-gradient(135deg, #198754, #20c997);">
+                            <i class="bi bi-save me-2"></i>Update Genre
                         </button>
                     </div>
                 </form>

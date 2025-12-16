@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\genres;
-use App\Models\books;
-use App\Models\comments;
+use App\Models\Genre;
+use App\Models\Book;
+use App\Models\Comment;
 use File;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -23,13 +23,13 @@ class booksController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $books = books::all();
+        $books = Book::all();
         return view('books.tampil', ['books' => $books]);
     }
 
     public function create()
     {
-        $genres = genres::all();
+        $genres = Genre::all();
         return view('books.tambah', ['genres' => $genres]);
     }
 
@@ -46,7 +46,7 @@ class booksController extends Controller implements HasMiddleware
         $newImageName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('images'), $newImageName);
 
-        $book = new books();
+        $book = new Book();
         $book->title = $request->title;
         $book->summary = $request->summary;
         $book->stok = $request->stok;
@@ -55,12 +55,12 @@ class booksController extends Controller implements HasMiddleware
 
         $book->save();
 
-        return redirect('/books');
+        return redirect('/books')->with('success', 'Buku berhasil ditambahkan!');
     }
 
     public function show(string $id)
     {
-        $book = books::find($id);
+        $book = Book::with(['comments.user', 'genre'])->find($id);
         if (!$book) {
             abort(404, 'Buku tidak ditemukan');
         }
@@ -69,8 +69,8 @@ class booksController extends Controller implements HasMiddleware
 
     public function edit(string $id)
     {
-        $genres = genres::all();
-        $book = books::find($id);
+        $genres = Genre::all();
+        $book = Book::find($id);
 
         return view('books.edit', ['book' => $book, 'genres' => $genres]);
     }
@@ -85,10 +85,12 @@ class booksController extends Controller implements HasMiddleware
             'stok' => 'required|integer|min:0',
         ]);
 
-        $book = books::find($id);
+        $book = Book::find($id);
 
         if ($request->hasFile('image')) {
-            File::delete(public_path("images/{$book->image}"));
+            if ($book->image && File::exists(public_path("images/{$book->image}"))) {
+                File::delete(public_path("images/{$book->image}"));
+            }
 
             $newImageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $newImageName);
@@ -103,32 +105,35 @@ class booksController extends Controller implements HasMiddleware
 
         $book->save();
 
-        return redirect('/books');
+        return redirect('/books')->with('success', 'Buku berhasil diupdate!');
     }
 
     public function destroy(string $id)
     {
-        $book = books::find($id);
+        $book = Book::find($id);
 
-        File::delete(public_path("images/{$book->image}"));
+        if ($book->image && File::exists(public_path("images/{$book->image}"))) {
+            File::delete(public_path("images/{$book->image}"));
+        }
+        
         $book->delete();
 
-        return redirect('/books');
+        return redirect('/books')->with('success', 'Buku berhasil dihapus!');
     }
 
-    public function comments(Request $request, $genre_id, $user_id)
+    public function comments(Request $request, $book_id)
     {
         $request->validate([
-            'content' => 'required|string|max:1000',
+            'comments' => 'required|string|max:1000',
         ]);
 
-        $comment = new comments();
-        $comment->content = $request->input('content');
-        $comment->user_id = $user_id;
-        $comment->genres_id = $genre_id;
+        $comment = new Comment();
+        $comment->comments = $request->input('comments');
+        $comment->user_id = auth()->id();
+        $comment->book_id = $book_id;
 
         $comment->save();
 
-        return redirect('/books');
+        return redirect('/books/' . $book_id)->with('success', 'Komentar berhasil ditambahkan!');
     }
 }
